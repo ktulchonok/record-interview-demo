@@ -1,0 +1,74 @@
+<html>
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, user-scalable=yes, initial-scale=1, maximum-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+
+  <!-- <base target="_blank"> -->
+
+  <title>Interview Recording</title>
+
+  <link href="//fonts.googleapis.com/css?family=Roboto:300,400,500,700" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+
+<body>
+
+  <div id="container">
+
+    <h3>Introduce yourself</h3>
+    <video id="gum" autoplay muted></video>
+    <video id="recorded" loop controls></video>
+
+    <div id="input-settings">
+      <div class="select">
+          <label for="audioSource">Audio input source: </label><select id="audioSource"></select>
+      </div>
+  
+      <div class="select">
+        <label for="videoSource">Video source: </label><select id="videoSource"></select>
+      </div>
+
+      <div id="meters">
+        <div id="instant">
+          <div class="label">Instant: </div>
+          <meter high="0.25" max="1" value="0"></meter>
+          <div class="value"></div>
+        </div>
+        <div id="slow">
+          <div class="label">Slow: </div>
+          <meter high="0.25" max="1" value="0"></meter>
+          <div class="value"></div>
+        </div>
+        <div id="clip">
+          <div class="label">Clip: </div>
+          <meter max="1" value="0"></meter>
+          <div class="value"></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="output-settings">
+      <div class="select">
+        <label for="audioOutput">Audio output destination: </label><select id="audioOutput"></select>
+      </div>
+    </div>
+
+    <div>
+      <button id="record" disabled>Start Recording</button>
+      <button id="reset">Try again</button>    
+      <button id="play">Play</button>
+      <button id="download">Download</button>
+      <button id="upload">Upload to server</button>
+    </div>
+
+  </div>
+
+  <!-- include adapter for srcObject shim -->
+  <script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
+  <script src="./soundmeter.js"></script>
+  <script src="./main.js"></script>  
+
+</body>
+</html>
