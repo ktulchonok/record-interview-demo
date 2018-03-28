@@ -18,10 +18,18 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }))
 
+app.get('/api', async (req, res) => {
+    try {
+        res.send('OK');
+    } catch (err) {
+        res.sendStatus(400);
+    }
+})
+
 app.post('/api/profile', upload.single('video'), async (req, res) => {
     try {
-    console.log('req', req.file)
-    res.sendStatus(200);
+        console.log('req', req.file)
+        res.sendStatus(200);
     } catch (err) {
         res.sendStatus(400);
     }
