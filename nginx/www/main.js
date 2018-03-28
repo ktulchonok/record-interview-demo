@@ -48,12 +48,14 @@ try {
   alert('Web Audio API not supported.');
 }
 
+var minDurationInput = document.querySelector('#minDuration');
+
 function gotDevices(deviceInfos) {
   // Handles being called several times to update labels. Preserve values.
-  var values = selectors.map(function(select) {
+  var values = selectors.map(function (select) {
     return select.value;
   });
-  selectors.forEach(function(select) {
+  selectors.forEach(function (select) {
     while (select.firstChild) {
       select.removeChild(select.firstChild);
     }
@@ -64,11 +66,11 @@ function gotDevices(deviceInfos) {
     option.value = deviceInfo.deviceId;
     if (deviceInfo.kind === 'audioinput') {
       option.text = deviceInfo.label ||
-          'microphone ' + (audioInputSelect.length + 1);
+        'microphone ' + (audioInputSelect.length + 1);
       audioInputSelect.appendChild(option);
     } else if (deviceInfo.kind === 'audiooutput') {
       option.text = deviceInfo.label || 'speaker ' +
-          (audioOutputSelect.length + 1);
+        (audioOutputSelect.length + 1);
       audioOutputSelect.appendChild(option);
     } else if (deviceInfo.kind === 'videoinput') {
       option.text = deviceInfo.label || 'camera ' + (videoSelect.length + 1);
@@ -77,10 +79,10 @@ function gotDevices(deviceInfos) {
       console.log('Some other kind of source/device: ', deviceInfo);
     }
   }
-  selectors.forEach(function(select, selectorIndex) {
-    if (Array.prototype.slice.call(select.childNodes).some(function(n) {
-      return n.value === values[selectorIndex];
-    })) {
+  selectors.forEach(function (select, selectorIndex) {
+    if (Array.prototype.slice.call(select.childNodes).some(function (n) {
+        return n.value === values[selectorIndex];
+      })) {
       select.value = values[selectorIndex];
     }
   });
@@ -92,19 +94,19 @@ navigator.mediaDevices.enumerateDevices().then(gotDevices).catch(handleError);
 function attachSinkId(element, sinkId) {
   if (typeof element.sinkId !== 'undefined') {
     element.setSinkId(sinkId)
-    .then(function() {
-      console.log('Success, audio output device attached: ' + sinkId);
-    })
-    .catch(function(error) {
-      var errorMessage = error;
-      if (error.name === 'SecurityError') {
-        errorMessage = 'You need to use HTTPS for selecting audio output ' +
+      .then(function () {
+        console.log('Success, audio output device attached: ' + sinkId);
+      })
+      .catch(function (error) {
+        var errorMessage = error;
+        if (error.name === 'SecurityError') {
+          errorMessage = 'You need to use HTTPS for selecting audio output ' +
             'device: ' + error;
-      }
-      console.error(errorMessage);
-      // Jump back to first output device in the list as it's the default.
-      audioOutputSelect.selectedIndex = 0;
-    });
+        }
+        console.error(errorMessage);
+        // Jump back to first output device in the list as it's the default.
+        audioOutputSelect.selectedIndex = 0;
+      });
   } else {
     console.warn('Browser does not support output device selection.');
   }
@@ -121,37 +123,45 @@ function gotStream(stream) {
   window.stream = stream;
   gumVideo.srcObject = stream;
   var soundMeter = window.soundMeter = new SoundMeter(window.audioContext);
-  soundMeter.connectToSource(stream, function(e) {
+  soundMeter.connectToSource(stream, function (e) {
     if (e) {
       alert(e);
       return;
     }
-    setInterval(function() {
+    setInterval(function () {
       instantMeter.value = instantValueDisplay.innerText =
-          soundMeter.instant.toFixed(2);
+        soundMeter.instant.toFixed(2);
       slowMeter.value = slowValueDisplay.innerText =
-          soundMeter.slow.toFixed(2);
+        soundMeter.slow.toFixed(2);
       clipMeter.value = clipValueDisplay.innerText =
-          soundMeter.clip;
+        soundMeter.clip;
     }, 200);
   });
-  return navigator.mediaDevices.enumerateDevices();  
+  return navigator.mediaDevices.enumerateDevices();
 }
 
 function start() {
   if (window.stream) {
-    window.stream.getTracks().forEach(function(track) {
+    window.stream.getTracks().forEach(function (track) {
       track.stop();
     });
   }
   var audioSource = audioInputSelect.value;
   var videoSource = videoSelect.value;
   var constraints = {
-    audio: {deviceId: audioSource ? {exact: audioSource} : undefined},
-    video: {deviceId: videoSource ? {exact: videoSource} : undefined}
+    audio: {
+      deviceId: audioSource ? {
+        exact: audioSource
+      } : undefined
+    },
+    video: {
+      deviceId: videoSource ? {
+        exact: videoSource
+      } : undefined
+    }
   };
   navigator.mediaDevices.getUserMedia(constraints).
-      then(gotStream).then(gotDevices).catch(handleError);
+  then(gotStream).then(gotDevices).catch(handleError);
 }
 
 start();
@@ -188,11 +198,12 @@ function toggleRecording() {
     document.querySelector('#input-settings').style.display = 'none';
   } else {
     stopRecording();
-    [recordButton, gumVideo].forEach(function(el) {
+    [recordButton, gumVideo].forEach(function (el) {
       el.style.display = 'none';
     });
     [document.querySelector('#output-settings'), recordedVideo, playButton,
-     downloadButton, uploadButton, resetButton].forEach(function(el) {
+      downloadButton, uploadButton, resetButton
+    ].forEach(function (el) {
       el.style.display = 'block';
     });
   }
@@ -200,16 +211,24 @@ function toggleRecording() {
 
 function startRecording() {
   recordedBlobs = [];
-  var options = {mimeType: 'video/webm;codecs=vp9'};
+  var options = {
+    mimeType: 'video/webm;codecs=vp9'
+  };
   if (!MediaRecorder.isTypeSupported(options.mimeType)) {
     console.log(options.mimeType + ' is not Supported');
-    options = {mimeType: 'video/webm;codecs=vp8'};
+    options = {
+      mimeType: 'video/webm;codecs=vp8'
+    };
     if (!MediaRecorder.isTypeSupported(options.mimeType)) {
       console.log(options.mimeType + ' is not Supported');
-      options = {mimeType: 'video/webm'};
+      options = {
+        mimeType: 'video/webm'
+      };
       if (!MediaRecorder.isTypeSupported(options.mimeType)) {
         console.log(options.mimeType + ' is not Supported');
-        options = {mimeType: ''};
+        options = {
+          mimeType: ''
+        };
       }
     }
   }
@@ -217,22 +236,26 @@ function startRecording() {
     mediaRecorder = new MediaRecorder(window.stream, options);
   } catch (e) {
     console.error('Exception while creating MediaRecorder: ' + e);
-    alert('Exception while creating MediaRecorder: '
-      + e + '. mimeType: ' + options.mimeType);
+    alert('Exception while creating MediaRecorder: ' +
+      e + '. mimeType: ' + options.mimeType);
     return;
   }
   console.log('Created MediaRecorder', mediaRecorder, 'with options', options);
-  recordButton.textContent = 'Stop Recording (5)';
   recordButton.disabled = true;
-  var i = 4;
-  var interval = setInterval(function() {
+  var i = minDurationInput.value >= 0 ? +minDurationInput.value : 0;
+  var changeTextContent = function () {
     if (!i) {
-      recordButton.textContent = 'Stop Recording';      
+      recordButton.textContent = 'Stop Recording';
       recordButton.disabled = false;
-      return clearInterval(interval);
+    } else {
+      recordButton.textContent = 'Stop Recording ' + '(' + i-- + ')';
     }
-    recordButton.textContent = 'Stop Recording '+'('+i--+')';    
-  }, 1000)
+  }
+  changeTextContent();
+  var intervalID = setInterval(function () {
+    if (i <= 0) clearInterval(intervalID);
+    changeTextContent();
+  }, 1000);
 
   mediaRecorder.onstop = handleStop;
   mediaRecorder.ondataavailable = handleDataAvailable;
@@ -247,28 +270,32 @@ function stopRecording() {
 }
 
 function play() {
-  var superBuffer = new Blob(recordedBlobs, {type: 'video/webm'});
+  var superBuffer = new Blob(recordedBlobs, {
+    type: 'video/webm'
+  });
   recordedVideo.src = window.URL.createObjectURL(superBuffer);
-  var t = setInterval(function() {
-    if(recordedVideo.readyState === 4) {
+  var t = setInterval(function () {
+    if (recordedVideo.readyState === 4) {
       if (recordedVideo.duration === Infinity) {
         recordedVideo.currentTime = 1e101;
-        recordedVideo.ontimeupdate = function() {
+        recordedVideo.ontimeupdate = function () {
           recordedVideo.currentTime = 0;
-          recordedVideo.ontimeupdate = function() {
+          recordedVideo.ontimeupdate = function () {
             delete recordedVideo.ontimeupdate;
             recordedVideo.play();
           };
         };
       }
       clearInterval(t);
-  }
+    }
   }, 100)
-  
+
 }
 
 function download() {
-  var blob = new Blob(recordedBlobs, {type: 'video/webm'});
+  var blob = new Blob(recordedBlobs, {
+    type: 'video/webm'
+  });
   var url = window.URL.createObjectURL(blob);
   var a = document.createElement('a');
   a.style.display = 'none';
@@ -276,7 +303,7 @@ function download() {
   a.download = 'test.webm';
   document.body.appendChild(a);
   a.click();
-  setTimeout(function() {
+  setTimeout(function () {
     document.body.removeChild(a);
     window.URL.revokeObjectURL(url);
   }, 100);
@@ -284,11 +311,12 @@ function download() {
 
 function upload() {
   var xhr = new XMLHttpRequest();
-  var blob = new Blob(recordedBlobs, {type: 'video/webm'});
-  var url = window.URL.createObjectURL(blob);
+  var blob = new Blob(recordedBlobs, {
+    type: 'video/webm'
+  });
   var fd = new FormData();
   fd.append('video', blob, 'test.webm');
-  xhr.open('POST', 'https://192.168.88.41:8080/api/profile', true);  
+  xhr.open('POST', 'http://192.168.88.41:3000/api/profile', true);
   xhr.send(fd);
 }
 
@@ -297,11 +325,12 @@ function reset() {
   recordButton.textContent = 'Start Recording';
   recordedVideo.ontimeupdate = undefined;
   recordedVideo.src = '';
-  [recordButton, gumVideo, document.querySelector('#input-settings')].forEach(function(el) {
+  [recordButton, gumVideo, document.querySelector('#input-settings')].forEach(function (el) {
     el.style.display = 'block';
   });
   [document.querySelector('#output-settings'), recordedVideo, playButton,
-    downloadButton, uploadButton, resetButton].forEach(function(el) {
+    downloadButton, uploadButton, resetButton
+  ].forEach(function (el) {
     el.style.display = 'none';
   });
 }

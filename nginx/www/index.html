@@ -1,4 +1,5 @@
 <html>
+
 <head>
 
   <meta charset="utf-8">
@@ -23,11 +24,13 @@
 
     <div id="input-settings">
       <div class="select">
-          <label for="audioSource">Audio input source: </label><select id="audioSource"></select>
+        <label for="audioSource">Audio input source: </label>
+        <select id="audioSource"></select>
       </div>
-  
+
       <div class="select">
-        <label for="videoSource">Video source: </label><select id="videoSource"></select>
+        <label for="videoSource">Video source: </label>
+        <select id="videoSource"></select>
       </div>
 
       <div id="meters">
@@ -47,17 +50,23 @@
           <div class="value"></div>
         </div>
       </div>
+
+      <div class="select">
+        <div class="label">Timer: </div>        
+        <input id="minDuration" type="number" min="0" value="0" /> sec.
+      </div>
     </div>
 
     <div id="output-settings">
       <div class="select">
-        <label for="audioOutput">Audio output destination: </label><select id="audioOutput"></select>
+        <label for="audioOutput">Audio output destination: </label>
+        <select id="audioOutput"></select>
       </div>
     </div>
 
     <div>
       <button id="record" disabled>Start Recording</button>
-      <button id="reset">Try again</button>    
+      <button id="reset">Try again</button>
       <button id="play">Play</button>
       <button id="download">Download</button>
       <button id="upload">Upload to server</button>
@@ -68,7 +77,8 @@
   <!-- include adapter for srcObject shim -->
   <script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
   <script src="./soundmeter.js"></script>
-  <script src="./main.js"></script>  
+  <script src="./main.js"></script>
 
 </body>
+
 </html>
